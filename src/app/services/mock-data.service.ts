@@ -4,36 +4,82 @@ import { ApprovalRequest } from '../models/models';
 @Injectable({ providedIn: 'root' })
 export class MockDataService {
     requests: ApprovalRequest[] = [];
-
+    configs: any[] = [];
 
     constructor() {
         const now = new Date();
-        this.requests = [
+        this.configs = [
             {
-                id: 'REQ-2025-001', entity: 'user', operation: 'create', initiator: 'John Mathew',
-                summary: 'Create Case Manager account', status: 'pending',
-                createdAt: now.toISOString(), dueAt: new Date(now.getTime() + 24 * 3600 * 1000).toISOString(),
-                history: [{ by: 'John Mathew', action: 'created request', at: now.toISOString() }]
+                id: 'b1d4b3f2-4a71-4b3c-8b0a-1a9b12c4e001',
+                entity_type: 'user',
+                operation: '*',
+                enabled: true,
+                workflow: [
+                    { stage: 1, approver_type: 'role', approver_identifier: 'hr_manager' },
+                    { stage: 2, approver_type: 'role', approver_identifier: 'admin' }
+                ],
+                timeout_policy: {
+                    reminder_days: 2,
+                    auto_escalate_after_days: 5,
+                    auto_reject_after_days: 10
+                },
+                created_by: '11111111-aaaa-bbbb-cccc-111111111111',
+                created_at: '2025-10-25T10:15:00Z',
+                updated_at: '2025-10-25T10:15:00Z'
             },
             {
-                id: 'REQ-2025-002', entity: 'master_lookup', operation: 'update', initiator: 'Admin',
-                summary: 'Update case status list', status: 'in_progress', createdAt: new Date(now.getTime() - 3600 * 1000).toISOString(),
-                history: [{ by: 'Admin', action: 'created request', at: new Date(now.getTime() - 3600 * 1000).toISOString() }]
+                id: 'b1d4b3f2-4a71-4b3c-8b0a-1a9b12c4e002',
+                entity_type: 'role',
+                operation: 'create',
+                enabled: true,
+                workflow: [
+                    { stage: 1, approver_type: 'user', approver_identifier: 'd2e8e3a2-9f22-4d33-a233-100000000001' }
+                ],
+                timeout_policy: {
+                    reminder_days: 3,
+                    auto_escalate_after_days: 7
+                },
+                created_by: '11111111-aaaa-bbbb-cccc-111111111111',
+                created_at: '2025-10-25T10:20:00Z',
+                updated_at: '2025-10-25T10:20:00Z'
             },
             {
-                id: 'REQ-2025-003', entity: 'policy_group', operation: 'update', initiator: 'Tamizh',
-                summary: 'Change policy group rules', status: 'rejected', createdAt: new Date(now.getTime() - 3600 * 24 * 1000).toISOString(),
-                history: [{ by: 'Tamizh', action: 'created request', at: new Date(now.getTime() - 3600 * 24 * 1000).toISOString() }, { by: 'Manager B', action: 'rejected', note: 'Missing justification', at: new Date(now.getTime() - 3600 * 23 * 1000).toISOString() }]
+                id: 'b1d4b3f2-4a71-4b3c-8b0a-1a9b12c4e003',
+                entity_type: 'policy_group',
+                operation: '*',
+                enabled: false,
+                workflow: [
+                    { stage: 1, approver_type: 'role', approver_identifier: 'policy_reviewer' },
+                    { stage: 2, approver_type: 'role', approver_identifier: 'policy_admin' }
+                ],
+                timeout_policy: {
+                    reminder_days: 1,
+                    auto_reject_after_days: 5
+                },
+                created_by: '11111111-aaaa-bbbb-cccc-111111111111',
+                created_at: '2025-10-25T10:25:00Z',
+                updated_at: '2025-10-25T10:25:00Z'
+            },
+            {
+                id: 'b1d4b3f2-4a71-4b3c-8b0a-1a9b12c4e004',
+                entity_type: 'master_lookup',
+                operation: '*',
+                enabled: true,
+                workflow: [
+                    { stage: 1, approver_type: 'role', approver_identifier: 'data_owner' },
+                    { stage: 2, approver_type: 'role', approver_identifier: 'system_admin' }
+                ],
+                timeout_policy: {
+                    reminder_days: 2
+                },
+                created_by: '11111111-aaaa-bbbb-cccc-111111111111',
+                created_at: '2025-10-25T10:30:00Z',
+                updated_at: '2025-10-25T10:30:00Z'
             }
         ];
     }
 
 
-    listRequests() { return this.requests.slice(); }
-    getRequest(id: string) { return this.requests.find(r => r.id === id); }
-    createRequest(req: ApprovalRequest) { this.requests.unshift(req); }
-    updateRequest(id: string, patch: Partial<ApprovalRequest>) { const r = this.getRequest(id); if (r) Object.assign(r, patch); }
-    cancelRequest(id: string) { this.updateRequest(id, { status: 'cancelled' }); }
-    approve(id: string, by = 'System') { this.updateRequest(id, { status: 'approved' }); const r = this.getRequest(id); r?.history.push({ by, action: 'approved', at: new Date().toISOString() }); }
-    reject(id: string, by = 'System', note = '') { this.updateRequest(id, { status: 'rejected' }); const r = this.getRequest(id); r?.history.push({ by, action: 'rejected', note, at: new Date().toISOString() }); }
+    getConfigs() { return this.configs.slice(); }
+    getConfig(id: string) { return this.configs.find(c => c.id === id); }
 }
