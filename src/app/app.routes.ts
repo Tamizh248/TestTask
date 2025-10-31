@@ -1,12 +1,14 @@
 import { Routes } from '@angular/router';
-import { UserComponent } from './user/user';
-import { ProductComponent } from './product/product';
 import { App } from './app';
+import { ConfigComponent } from './config/config';
+import { RequestListComponent } from './request-list/request-list';
+import { ApprovelListComponent } from './approvel-list/approvel-list';
 
 
 export const routes: Routes = [
 //   { path: '', redirectTo: 'user', pathMatch: 'full' },
   { path: '', component: App },
-  { path: 'user', component: UserComponent },
-  { path: 'product', component: ProductComponent }
+  { path: 'config', component: ConfigComponent },
+  { path: 'requestlist', component: RequestListComponent },
+  { path: 'approverlist', component: ApprovelListComponent }
 ];
