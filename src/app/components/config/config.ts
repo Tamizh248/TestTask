@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 // import { ApprovalConfig } from './approval-config.model';
-import { MockDataService } from '../services/mock-data.service';
-import { ConfigureWorkflow, WorkflowStage, User, Role } from '../models/models';
+import { MockDataService } from '../../services/mock-data.service';
+import { ConfigureWorkflow, WorkflowStage, User, Role } from '../../models/models';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { delay, finalize, map } from 'rxjs/operators';
 

@@ -1,19 +1,38 @@
+<div class="min-h-screen flex bg-gray-50">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-[#0F3077] text-white p-4">
+    <div class="mb-6 flex items-center gap-3">
+      <div class="w-8 h-8 rounded bg-white/20 flex items-center justify-center font-bold">C</div>
+      <div class="text-lg font-semibold">Cardinality</div>
+    </div>
 
+    <nav class="space-y-1">
+      <a routerLink="/config"
+         routerLinkActive="bg-[#108CC8]"
+         class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#108CC8] transition">
+        <span class="w-5">⚙️</span>
+        <span class="text-sm font-medium">Config</span>
+      </a>
 
-<h1>My Angular App</h1>
+      <a routerLink="/requestlist"
+         routerLinkActive="bg-[#108CC8]"
+         class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#108CC8] transition">
+        <span class="w-5">📋</span>
+        <span class="text-sm font-medium">Request List</span>
+      </a>
 
-<nav>
-  <a routerLink="/config">Config</a> |
-  <a routerLink="/requestlist">Request List</a> |
-  <a routerLink="/approverlist">Approver List</a> |
-</nav>
+      <a routerLink="/approverlist"
+         routerLinkActive="bg-[#108CC8]"
+         class="flex items-center gap-3 px-3 py-2 rounded hover:bg-[#108CC8] transition">
+        <span class="w-5">👥</span>
+        <span class="text-sm font-medium">Approver List</span>
+      </a>
+    </nav>
 
-<hr />
+  </aside>
 
-<router-outlet></router-outlet>
-
-
-
-
-
-
+  <!-- Main content -->
+  <main class="flex-1 p-6">
+    <router-outlet></router-outlet>
+  </main>
+</div>

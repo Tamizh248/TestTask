@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { MockDataService } from '../services/mock-data.service';
-import {  UserApprovalRequest } from '../models/models';
-import { ApprovalRequestDetails } from '../mocks/approval-mock-data';
-import { ApprovalBaseListComponent } from '../components/approval-base-list/approval-base-list';
+import { MockDataService } from '../../services/mock-data.service';
+import {  UserApprovalRequest } from '../../models/models';
+import { ApprovalRequestDetails } from '../../mocks/approval-mock-data';
+import { ApprovalBaseListComponent } from '../approval-base-list/approval-base-list';
 
 @Component({
   selector: 'app-request-list',
