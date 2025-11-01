@@ -1,0 +1,11 @@
+<div class="flex flex-col">
+  <app-user-card
+    *ngFor="let user of users"
+    [id]="user.id"
+    [name]="user.name"
+    [status]="user.status"
+    [entity_type]="user.entity_type"
+    [isSelected]="user.id === selectedUserId"
+    (selectUser)="onUserSelect($event)"
+  ></app-user-card>
+</div>

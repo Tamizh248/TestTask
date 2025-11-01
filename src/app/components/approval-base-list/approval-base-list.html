@@ -1,0 +1,87 @@
+<div class="flex flex-cols gap-2 h-[90vh]">
+  <!-- Left Panel -->
+  <div class="bg-white border border-gray-200 overflow-y-auto max-h-[95vh] w-[360px]">
+    <app-user-list-card
+      [title]="'Requesters'"
+      [users]="users"
+      (userSelected)="onUserSelect($event)"
+    ></app-user-list-card>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="bg-white rounded-lg w-full">
+    <ng-container *ngIf="selectedRequestId; else noSelection">
+      <div *ngIf="details" class="p-6">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-semibold text-gray-900">Approval Details</h2>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-sm text-gray-500">Request ID: {{ details.id }}</span>
+              <span
+                class="px-2 py-0.5 text-xs font-medium rounded"
+                [ngClass]="{
+                  'bg-yellow-100 text-yellow-700': details.status === 'PENDING',
+                  'bg-green-100 text-green-700': details.status === 'APPROVED',
+                  'bg-red-100 text-red-700': details.status === 'REJECTED'
+                }"
+              >
+                {{ details.status }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Dynamic Action Buttons -->
+          <div *ngIf="details.status === 'PENDING'" class="flex gap-3">
+            <app-button
+              *ngFor="let btn of actionButtons"
+              [label]="btn.label"
+              [type]="btn.type"
+              (onClick)="triggerAction(btn.action)"
+            ></app-button>
+          </div>
+        </div>
+
+        <!-- Info Fields -->
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Requester Name</label>
+            <div class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-gray-900">
+              {{ details.name }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <div class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-gray-900">
+              {{ details.email }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Requested Role</label>
+            <div class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-gray-900">
+              {{ details.role }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Submitted Date</label>
+            <div class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-gray-900">
+              {{ details.created_at }}
+            </div>
+          </div>
+          <div class="col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Reason for Request</label>
+            <div class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-gray-900 min-h-[80px]">
+              {{ details.payload_summary }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #noSelection>
+      <div class="flex items-center justify-center h-full p-8">
+        <p class="text-gray-400 text-lg">Click a request card to view details.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

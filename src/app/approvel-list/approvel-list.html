@@ -1,1 +1,11 @@
-<p>approvel-list works!</p>
+<app-approval-base-list
+  [users]="users"
+  [details]="details"
+  [selectedRequestId]="selectedRequestId"
+  [actionButtons]="[
+    { label: 'Reject', type: 'secondary', action: 'reject' },
+    { label: 'Approve', type: 'primary', action: 'approve' }
+  ]"
+  (userSelected)="onUserSelect($event)"
+  (actionClicked)="handleAction($event)"
+></app-approval-base-list>
