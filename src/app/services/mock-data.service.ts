@@ -1,10 +1,35 @@
 import { Injectable } from '@angular/core';
 import { ApprovalRequest } from '../models/models';
+import { Observable, of, throwError } from 'rxjs';
+import { delay, map } from 'rxjs/operators';
+import { ConfigureWorkflow, User, Role } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class MockDataService {
     requests: ApprovalRequest[] = [];
     configs: any[] = [];
+
+    // mock users and roles
+    private mockUsers = [
+        { id: 'd2e8e3a2-9f22-4d33-a233-100000000001', name: 'Alice Johnson' },
+        { id: 'd2e8e3a2-9f22-4d33-a233-100000000002', name: 'Bob Smith' },
+        { id: 'd2e8e3a2-9f22-4d33-a233-100000000003', name: 'Charlie Brown' },
+        { id: 'd2e8e3a2-9f22-4d33-a233-100000000004', name: 'Diana Evans' },
+        { id: 'd2e8e3a2-9f22-4d33-a233-100000000005', name: 'Ethan Walker' },
+        { id: 'd2e8e3a2-9f22-4d33-a233-100000000006', name: 'Fiona Clark' },
+        { id: 'd2e8e3a2-9f22-4d33-a233-100000000007', name: 'George Miller' },
+        { id: 'd2e8e3a2-9f22-4d33-a233-100000000008', name: 'Hannah Lewis' },
+        { id: 'd2e8e3a2-9f22-4d33-a233-100000000009', name: 'Ian Scott' },
+        { id: 'd2e8e3a2-9f22-4d33-a233-100000000010', name: 'Julia Roberts' },
+    ];
+
+    private mockRoles = [
+        { id: 'hr_manager', name: 'HR Manager' },
+        { id: 'admin', name: 'Administrator' },
+        { id: 'policy_reviewer', name: 'Policy Reviewer' },
+        { id: 'finance_head', name: 'Finance Head' },
+        { id: 'it_support', name: 'IT Support' },
+    ];
 
     constructor() {
         const now = new Date();
@@ -82,4 +107,40 @@ export class MockDataService {
 
     getConfigs() { return this.configs.slice(); }
     getConfig(id: string) { return this.configs.find(c => c.id === id); }
+
+    updateConfig(payload: ConfigureWorkflow): Observable<ConfigureWorkflow> {
+        // simulate server processing time (500ms)
+        const simulatedLatencyMs = 500;
+
+        const idx = this.configs.findIndex(c => c.id === payload.id);
+        if (idx === -1) {
+            // simulate not found error
+            return throwError(() => new Error('Config not found'));
+        }
+
+        // create updated object (avoid mutating original reference unexpectedly)
+        const nowIso = new Date().toISOString();
+        const updated: ConfigureWorkflow = {
+            ...this.configs[idx],
+            ...payload,
+            updated_at: nowIso
+        };
+
+        // update in-memory store
+        this.configs[idx] = updated;
+
+        // return observable like an HTTP call
+        return of(updated).pipe(
+            delay(simulatedLatencyMs),
+            map(x => x) // keep chain flexible for future operators
+        );
+    }
+
+    getUsers(): Observable<User[]> {
+        return of(this.mockUsers).pipe(delay(250));
+    }
+
+    getRoles(): Observable<Role[]> {
+        return of(this.mockRoles).pipe(delay(250));
+    }
 }

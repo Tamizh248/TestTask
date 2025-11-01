@@ -1,90 +1,137 @@
 <div class="max-w-6xl mx-auto bg-white">
-  <!-- Tabs -->
-  <div class="border-b border-gray-200">
-    <div class="flex gap-8 px-6">
-      <button
-        *ngFor="let conf of configs"
-        (click)="selectEntity(conf)"
-        class="py-3 px-4 text-sm text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition"
-        [ngClass]="{
-          'text-blue-600 font-medium border-blue-500': selectedEntity === conf
-        }"
-      >
-        {{ conf.entity_type | titlecase }}
-      </button>
+    <!-- Tabs -->
+    <div class="border-b border-gray-200">
+        <div class="flex gap-8 px-6">
+            <button *ngFor="let conf of configs" (click)="selectEntity(conf)"
+                class="relative py-3 px-4 text-sm font-medium transition-colors duration-200" [ngClass]="
+        selectedEntity === conf
+          ? 'text-blue-600 border-b-2 border-blue-600'
+          : 'text-gray-500 hover:text-blue-500 hover:border-b-2 hover:border-blue-200'
+      ">
+                {{ conf.entity_type | titlecase }}
+            </button>
+        </div>
     </div>
-  </div>
 
-  <div class="p-6">
-    <!-- Selected Config Info -->
-    <div class="mb-8">
-      <h2 class="text-lg font-semibold text-gray-900">{{ selectedEntity.entity_type | titlecase }} Configuration</h2>
-      <p class="text-sm text-gray-500 mt-1">
-        Operation: <strong class="text-gray-700">{{ selectedEntity.operation }}</strong>
-      </p>
+    <div class="p-6">
+        <!-- Selected Config Info -->
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold text-gray-900">{{ selectedEntity.entity_type | uppercase }} CONFIGURATION
+            </h2>
 
-      <!-- Active Toggle -->
-      <div class="flex items-center gap-3 mt-4">
-        <span class="text-sm text-gray-500">Inactive</span>
+            <div class="flex items-center gap-8 mt-8">
+                <div class="relative w-160">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Approver</label>
+                    <p class="text-xs text-gray-500">Select and assign one or more approvers who will review and approve
+                        the requests.</p>
+                </div>
+                <!-- Active Toggle -->
+                <div class="flex items-center gap-3 mt-6 pl-10">
+                    <span class="text-sm font-semibold text-gray-600">Status:</span>
 
-        <!-- toggle -->
-        <div
-          role="button"
-          (click)="toggleActive()"
-          class="relative w-11 h-6 rounded-full cursor-pointer transition-colors"
-          [ngClass]="{ 'bg-blue-600': selectedEntity.enabled, 'bg-gray-300': !selectedEntity.enabled }"
-        >
-          <div
-            class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transform transition-transform"
-            [class.translate-x-5]="selectedEntity.enabled"
-          ></div>
+                    <div (click)="toggleActive()"
+                        class="relative w-12 h-6 rounded-full cursor-pointer transition-all duration-300"
+                        [ngClass]="selectedEntity.enabled ? 'bg-blue-600 shadow-md shadow-blue-400/40' : 'bg-gray-300'">
+                        <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300"
+                            [class.translate-x-6]="selectedEntity.enabled"></div>
+                    </div>
+
+                    <span class="text-sm font-bold transition-colors"
+                        [ngClass]="selectedEntity.enabled ? 'text-blue-600' : 'text-gray-500'">
+                        {{ selectedEntity.enabled ? 'Active' : 'Inactive' }}
+                    </span>
+                </div>
+            </div>
         </div>
 
-        <span class="text-sm text-gray-700 font-medium">Active</span>
-      </div>
-    </div>
+        <!-- Example Dropdown (Country) -->
+        <div class="mb-8 flex items-center justify-between ">
+            <div>
+                <!-- Multi-select dropdown (left side of the row) -->
+                <div class="relative w-160">
 
-    <!-- Example Dropdown (Country) -->
-    <div class="mb-8">
-      <label for="country" class="block text-sm font-medium text-gray-700 mb-2">Select Country</label>
-      <select
-        id="country"
-        class="w-64 px-3 py-2 border border-gray-200 rounded-md bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-200"
-        [(ngModel)]="selectedCountry"
-      >
-        <option value="">-- Choose --</option>
-        <option *ngFor="let country of countries" [value]="country">
-          {{ country }}
-        </option>
-      </select>
+                    <!-- control -->
+                    <div class="flex items-center gap-2 flex-wrap min-h-[44px] px-3 py-2 border border-gray-200 rounded-md bg-white cursor-pointer"
+                        (click)="dropdownOpen = !dropdownOpen" tabindex="0">
+                        <!-- tags -->
+                        <ng-container *ngIf="selectedItems?.length; else placeholder">
+                            <span *ngFor="let s of selectedItems"
+                                class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full flex items-center gap-2 mr-1">
+                                <ng-container *ngIf="approverMode === 'user'; else roleName">
+                                    {{ getUserName(s) }}
+                                </ng-container>
+                                <ng-template #roleName>
+                                    {{ getRoleName(s) }}
+                                </ng-template>
 
-      <p class="text-sm text-gray-500 mt-2">Selected: <span class="text-gray-700">{{ selectedCountry || 'None' }}</span></p>
-    </div>
+                                <button type="button" class="ml-1 text-sm" (click)="removeTag($event, s)"
+                                    aria-label="Remove {{s}}">&times;</button>
+                            </span>
+                        </ng-container>
 
-    <!-- Workflow Section -->
-    <div class="mb-8">
-      <h3 class="text-md font-semibold text-gray-900 mb-3">Workflow</h3>
+                        <ng-template #placeholder>
+                            <span class="text-sm text-gray-400">-- Choose --</span>
+                        </ng-template>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div
-          *ngFor="let stage of selectedEntity.workflow"
-          class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-md p-3"
-        >
-          <span class="text-sm text-gray-800">
-            <span class="font-medium">Stage {{ stage.stage }}</span>
-            <span class="text-gray-600"> → {{ stage.approver_identifier }}</span>
-            <span class="ml-2 text-xs text-gray-500">({{ stage.approver_type }})</span>
-          </span>
+                        <!-- caret -->
+                        <svg class="ml-auto h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+
+                    <!-- dropdown -->
+                    <div *ngIf="dropdownOpen"
+                        class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-56 overflow-auto"
+                        (click)="$event.stopPropagation()">
+                        <ul class="p-2">
+                            <li *ngFor="let it of (approverMode === 'user' ? users : roles)"
+                                class="flex items-center gap-2 p-2 hover:bg-gray-50 rounded"
+                                (mousedown)="$event.stopPropagation()">
+                                <input type="checkbox" [checked]="isSelected(it.id)"
+                                    (change)="toggleItem(it.id, $event.target.checked)" id="{{ 'a-' + it.id }}"
+                                    class="h-4 w-4" />
+                                <label for="{{ 'a-' + it.id }}" class="ml-2 text-sm text-gray-700">{{ it.name }}</label>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Segmented control (buttons) -->
+            <div class="flex flex-col items-end pt-2">
+                <div class="inline-flex rounded-full bg-gray-200 p-1 gap-1">
+                    <button type="button" (click)="setApproverMode('user')"
+                        [attr.aria-pressed]="approverMode === 'user'"
+                        class="px-4 py-1 rounded-full text-sm font-medium transition" [ngClass]="{
+                            'bg-blue-600 text-white shadow': approverMode === 'user',
+                            'text-gray-600 hover:bg-gray-100': approverMode !== 'user'
+                            }">
+                        User Based
+                    </button>
+
+                    <button type="button" (click)="setApproverMode('role')"
+                        [attr.aria-pressed]="approverMode === 'role'"
+                        class="px-4 py-1 rounded-full text-sm font-medium transition" [ngClass]="{
+                            'bg-blue-600 text-white shadow': approverMode === 'role',
+                            'text-gray-600 hover:bg-gray-100': approverMode !== 'role'
+                            }">
+                        Role Based
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Timeout Policy -->
-    <div>
-      <h3 class="text-md font-semibold text-gray-900 mb-3">Timeout Policy</h3>
-      <pre class="bg-gray-50 border border-gray-200 rounded-md p-4 text-sm text-gray-700 overflow-auto">
-{{ selectedEntity.timeout_policy | json }}
-      </pre>
+        <!-- Save Button -->
+        <div class="flex justify-end mt-8">
+            <button (click)="saveConfig()"
+                class="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow hover:bg-blue-700 transition">
+                Save
+            </button>
+        </div>
+
     </div>
-  </div>
 </div>
