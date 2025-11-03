@@ -30,8 +30,8 @@ export interface WorkflowStage {
 
 export interface TimeoutPolicy {
   reminder_days: number;
-  auto_escalate_after_days: number;
-  auto_reject_after_days: number;
+  auto_escalate_after_days?: number;
+  auto_reject_after_days?: number;
 }
 
 export interface User {
@@ -50,3 +50,31 @@ export interface UserApprovalRequest {
   status: 'APPROVED' | 'PENDING' | 'REJECTED';
   entity_type: 'user' | 'role' | 'policy group' | 'master lookup';
 }
+
+export interface ApprovalRequestDetails {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  payload_summary: string;
+  created_at: string;
+  status: 'APPROVED' | 'PENDING' | 'REJECTED';
+}
+
+export interface ApprovalHistory {
+  id: string;
+  request_id: string;
+  actor_id: string | null;
+  action: string;
+  stage: number;
+  comment: string;
+  created_at: string;
+  metadata: Record<string, any>;
+}
+
+
+export type ApprovalResponse = {
+  stages: number;
+  history: ApprovalHistory[];
+  workFlow: WorkflowStage[];
+};

@@ -1,0 +1,55 @@
+<div class="px-4 py-6">
+  <h3 class="text-sm font-medium text-slate-700 mb-4">Approval Process : {{ approverType | uppercase }} BASED</h3>
+
+  <div class="flex items-center gap-6">
+    <ng-container *ngFor="let s of stagesData; let i = index">
+      <div class="relative flex items-center group">
+        <!-- Stage block -->
+        <div class="flex flex-col items-center">
+          <!-- circle -->
+          <div
+            class="w-9 h-9 rounded-full border-2 flex items-center justify-center font-semibold text-sm transition-shadow"
+            [ngClass]="statusClasses(s.status).circle + ' ' + statusClasses(s.status).ring">
+            <span>{{ formatIndex(i) }}</span>
+          </div>
+
+          <!-- label -->
+          <div class="mt-2 text-xs text-center">
+            <div class="font-medium text-sm truncate w-28" [title]="s.label">{{ s.label }}</div>
+            <div class="text-[11px] text-slate-400">
+              {{ s.status === 'APPROVED' ? 'Approved' : s.status === 'REJECTED' ? 'Rejected' : 'Pending' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- connector to next (only if not last) -->
+        <div *ngIf="i < stagesData.length - 1"
+             class=" left-full top-1/2 -translate-y-1/2 ml-2 w-14 h-0.5 bg-slate-200 mb-4"
+             [ngClass]="{'bg-blue-600': s.status === 'APPROVED'}">
+        </div>
+
+        <!-- Tooltip on hover -->
+        <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 pointer-events-none">
+          <div
+            class="opacity-0 translate-y-1 scale-95 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-150 pointer-events-auto">
+            <div class="bg-white border border-slate-200 shadow-sm rounded-md p-3 text-xs">
+              <div class="font-semibold text-sm mb-1">
+                {{ s.status === 'APPROVED' ? 'Approved' : s.status === 'REJECTED' ? 'Rejected' : 'Pending' }}
+              </div>
+              <div class="text-[13px] text-slate-600 mb-1">
+                <span *ngIf="s.comment; else noComment">{{ s.comment }}</span>
+                <ng-template #noComment><span class="text-slate-400">No comments</span></ng-template>
+              </div>
+              <div class="text-[12px] text-slate-400">
+                <span *ngIf="s.date; else noDate">
+                  {{ s.date | date: 'medium' }}
+                </span>
+                <ng-template #noDate><span>—</span></ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

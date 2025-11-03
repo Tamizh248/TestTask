@@ -1,8 +1,8 @@
 <div
-  class="flex items-center justify-between p-4 bg-white border-b border-gray-200 hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+  class="flex items-center justify-between p-4 bg-white border-b border-gray-200 transition-all duration-200 cursor-pointer"
   [ngClass]="{
     'bg-[#2C4684] border-blue-400 shadow-sm': isSelected,
-    'bg-white hover:bg-gray-50': !isSelected
+    'bg-white hover:bg-gray-100': !isSelected
   }"
   (click)="onSelect()"
 >

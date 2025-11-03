@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import {  UserApprovalRequest } from '../../models/models';
-import { ApprovalRequestDetails } from '../../mocks/approval-mock-data';
+import {  UserApprovalRequest, ApprovalRequestDetails } from '../../models/models';
 import { MockDataService } from '../../services/mock-data.service';
 import { CommonModule } from '@angular/common';
 import { ApprovalBaseListComponent } from '../approval-base-list/approval-base-list';
@@ -20,6 +19,10 @@ export class ApprovelListComponent {
 
   ngOnInit() {
     this.users = this.mockService.getMockUsers();
+    this.selectedRequestId = this.users.length > 0 ? this.users[0].id : null;
+    if (this.selectedRequestId) {
+      this.details = this.mockService.getMockRequestDetails(this.selectedRequestId);
+    }
   }
 
   onUserSelect(requestId: string) {

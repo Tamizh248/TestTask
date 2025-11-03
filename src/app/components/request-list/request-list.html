@@ -5,6 +5,7 @@
   [actionButtons]="[
     { label: 'Cancel', type: 'primary', action: 'cancel' }
   ]"
+  [historyData]="historyData"
   (userSelected)="onUserSelect($event)"
   (actionClicked)="handleAction($event)"
 ></app-approval-base-list>
